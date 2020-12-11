@@ -36,7 +36,7 @@ abstract class ShopifyResource
      *
      * @var array
      */
-    public static $lastHttpResponseHeaders = array();
+    public $lastHttpResponseHeaders = array();
 
     /**
      * The base URL of the API Resource (excluding the '.json' extension).
@@ -524,7 +524,7 @@ abstract class ShopifyResource
      */
     public function processResponse($responseArray, $dataKey = null)
     {
-        self::$lastHttpResponseHeaders = CurlRequest::$lastHttpResponseHeaders;
+        $this->lastHttpResponseHeaders = CurlRequest::$lastHttpResponseHeaders;
 
         if ($responseArray === null) {
             //Something went wrong, Checking HTTP Codes
@@ -550,7 +550,7 @@ abstract class ShopifyResource
             if($message=='account already enabled'){
                 return array('account_activation_url'=>false);
             }
-            
+
             throw new ApiException($message, CurlRequest::$lastHttpCode);
         }
 

@@ -25,14 +25,14 @@ class HttpRequestJson
      *
      * @var array
      */
-    protected static $httpHeaders;
+    protected $httpHeaders;
 
     /**
      * Prepared JSON string to be posted with request
      *
      * @var string
      */
-    private static $postDataJSON;
+    private $postDataJSON;
 
 
     /**
@@ -43,16 +43,16 @@ class HttpRequestJson
      *
      * @return void
      */
-    protected static function prepareRequest($httpHeaders = array(), $dataArray = array())
+    protected function prepareRequest($httpHeaders = array(), $dataArray = array())
     {
 
-        self::$postDataJSON = json_encode($dataArray);
+        $this->postDataJSON = json_encode($dataArray);
 
-        self::$httpHeaders = $httpHeaders;
+        $this->httpHeaders = $httpHeaders;
 
         if (!empty($dataArray)) {
-            self::$httpHeaders['Content-type'] = 'application/json';
-            self::$httpHeaders['Content-Length'] = strlen(self::$postDataJSON);
+            $this->httpHeaders['Content-type'] = 'application/json';
+            $this->httpHeaders['Content-Length'] = strlen($this->postDataJSON);
         }
     }
 
@@ -64,11 +64,11 @@ class HttpRequestJson
      *
      * @return array
      */
-    public static function get($url, $httpHeaders = array())
+    public function get($url, $httpHeaders = array())
     {
         self::prepareRequest($httpHeaders);
 
-        $response = CurlRequest::get($url, self::$httpHeaders);
+        $response = CurlRequest::get($url, $this->httpHeaders);
 
         return self::processResponse($response);
     }
@@ -82,11 +82,11 @@ class HttpRequestJson
      *
      * @return array
      */
-    public static function post($url, $dataArray, $httpHeaders = array())
+    public function post($url, $dataArray, $httpHeaders = array())
     {
         self::prepareRequest($httpHeaders, $dataArray);
 
-        $response = CurlRequest::post($url, self::$postDataJSON, self::$httpHeaders);
+        $response = CurlRequest::post($url, $this->postDataJSON, $this->httpHeaders);
 
         return self::processResponse($response);
     }
@@ -100,11 +100,11 @@ class HttpRequestJson
      *
      * @return array
      */
-    public static function put($url, $dataArray, $httpHeaders = array())
+    public function put($url, $dataArray, $httpHeaders = array())
     {
         self::prepareRequest($httpHeaders, $dataArray);
 
-        $response = CurlRequest::put($url, self::$postDataJSON, self::$httpHeaders);
+        $response = CurlRequest::put($url, $this->postDataJSON, $this->httpHeaders);
 
         return self::processResponse($response);
     }
@@ -117,11 +117,11 @@ class HttpRequestJson
      *
      * @return array
      */
-    public static function delete($url, $httpHeaders = array())
+    public function delete($url, $httpHeaders = array())
     {
         self::prepareRequest($httpHeaders);
 
-        $response = CurlRequest::delete($url, self::$httpHeaders);
+        $response = CurlRequest::delete($url, $this->httpHeaders);
 
         return self::processResponse($response);
     }
@@ -133,7 +133,7 @@ class HttpRequestJson
      *
      * @return array
      */
-    protected static function processResponse($response)
+    protected function processResponse($response)
     {
 
         return json_decode($response, true);

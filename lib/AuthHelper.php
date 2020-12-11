@@ -17,7 +17,7 @@ class AuthHelper
      *
      * @return string
      */
-    public static function getCurrentUrl()
+    public function getCurrentUrl()
     {
         if (isset($_SERVER['HTTPS']) &&
             ($_SERVER['HTTPS'] == 'on' || $_SERVER['HTTPS'] == 1) ||
@@ -40,7 +40,7 @@ class AuthHelper
      *
      * @return array
      */
-    public static function buildQueryString($data)
+    public function buildQueryString($data)
     {
         $paramStrings = [];
         foreach ($data as $key => $value) {
@@ -56,7 +56,7 @@ class AuthHelper
      *
      * @return bool
      */
-    public static function verifyShopifyRequest()
+    public function verifyShopifyRequest()
     {
         $data = $_GET;
 
@@ -104,7 +104,7 @@ class AuthHelper
      *
      * @return void|string
      */
-    public static function createAuthRequest($scopes, $redirectUrl = null, $state = null, $options = null, $return = false)
+    public function createAuthRequest($scopes, $redirectUrl = null, $state = null, $options = null, $return = false)
     {
         $config = ShopifySDK::$config;
 
@@ -153,7 +153,7 @@ class AuthHelper
      *
      * @return string
      */
-    public static function getAccessToken()
+    public function getAccessToken()
     {
         $config = ShopifySDK::$config;
 

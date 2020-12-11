@@ -18,7 +18,7 @@ class HttpRequestGraphQL extends HttpRequestJson
      *
      * @var string
      */
-    private static $postDataGraphQL;
+    private $postDataGraphQL;
 
     /**
      * Prepare the data and request headers before making the call
@@ -31,11 +31,11 @@ class HttpRequestGraphQL extends HttpRequestJson
      *
      * @throws SdkException if $data is not a string
      */
-    protected static function prepareRequest($httpHeaders = array(), $data = array(), $variables = null)
+    protected function prepareRequest($httpHeaders = array(), $data = array(), $variables = null)
     {
 
         if (is_string($data)) {
-            self::$postDataGraphQL = $data;
+            $this->postDataGraphQL = $data;
         } else {
             throw new SdkException("Only GraphQL string is allowed!");
         }
@@ -44,13 +44,13 @@ class HttpRequestGraphQL extends HttpRequestJson
             throw new SdkException("The GraphQL Admin API requires an access token for making authenticated requests!");
         }
 
-        self::$httpHeaders = $httpHeaders;
+        $this->httpHeaders = $httpHeaders;
 
         if (is_array($variables)) {
-            self::$postDataGraphQL = json_encode(['query' => $data, 'variables' => $variables]);
-            self::$httpHeaders['Content-type'] = 'application/json';
+            $this->postDataGraphQL = json_encode(['query' => $data, 'variables' => $variables]);
+            $this->httpHeaders['Content-type'] = 'application/json';
         } else {
-            self::$httpHeaders['Content-type'] = 'application/graphql';
+            $this->httpHeaders['Content-type'] = 'application/graphql';
         }
     }
 
@@ -64,11 +64,11 @@ class HttpRequestGraphQL extends HttpRequestJson
      *
      * @return string
      */
-    public static function post($url, $data, $httpHeaders = array(), $variables = null)
+    public function post($url, $data, $httpHeaders = array(), $variables = null)
     {
         self::prepareRequest($httpHeaders, $data, $variables);
 
-        $response = CurlRequest::post($url, self::$postDataGraphQL, self::$httpHeaders);
+        $response = CurlRequest::post($url, $this->postDataGraphQL, $this->httpHeaders);
 
         return self::processResponse($response);
     }

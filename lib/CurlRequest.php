@@ -26,14 +26,14 @@ class CurlRequest
      *
      * @var integer
      */
-    public static $lastHttpCode;
+    public $lastHttpCode;
 
     /**
      * HTTP response headers of last executed request
      *
      * @var array
      */
-    public static $lastHttpResponseHeaders = array();
+    public $lastHttpResponseHeaders = array();
 
     /**
      * Initialize the curl resource
@@ -43,7 +43,7 @@ class CurlRequest
      *
      * @return resource
      */
-    protected static function init($url, $httpHeaders = array())
+    protected function init($url, $httpHeaders = array())
     {
         // Create Curl resource
         $ch = curl_init();
@@ -76,7 +76,7 @@ class CurlRequest
      *
      * @return string
      */
-    public static function get($url, $httpHeaders = array())
+    public function get($url, $httpHeaders = array())
     {
         //Initialize the Curl resource
         $ch = self::init($url, $httpHeaders);
@@ -93,7 +93,7 @@ class CurlRequest
      *
      * @return string
      */
-    public static function post($url, $data, $httpHeaders = array())
+    public function post($url, $data, $httpHeaders = array())
     {
         $ch = self::init($url, $httpHeaders);
         //Set the request type
@@ -112,7 +112,7 @@ class CurlRequest
      *
      * @return string
      */
-    public static function put($url, $data, $httpHeaders = array())
+    public function put($url, $data, $httpHeaders = array())
     {
         $ch = self::init($url, $httpHeaders);
         //set the request type
@@ -130,7 +130,7 @@ class CurlRequest
      *
      * @return string
      */
-    public static function delete($url, $httpHeaders = array())
+    public function delete($url, $httpHeaders = array())
     {
         $ch = self::init($url, $httpHeaders);
         //set the request type
@@ -148,15 +148,15 @@ class CurlRequest
      *
      * @return string
      */
-    protected static function processRequest($ch)
+    protected function processRequest($ch)
     {
         # Check for 429 leaky bucket error
         while (1) {
             $output   = curl_exec($ch);
             $response = new CurlResponse($output);
 
-            self::$lastHttpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            if (self::$lastHttpCode != 429) {
+            $this->lastHttpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            if ($this->lastHttpCode != 429) {
                 break;
             }
 
@@ -182,7 +182,7 @@ class CurlRequest
         // close curl resource to free up system resources
         curl_close($ch);
 
-        self::$lastHttpResponseHeaders = $response->getHeaders();
+        $this->lastHttpResponseHeaders = $response->getHeaders();
 
         return $response->getBody();
     }
